@@ -24,7 +24,7 @@
   function sendData() {
     var val = document.getElementById("rawInput").value;
     if(!val) return;
-    var url = "null?text=" + encodeURIComponent(val);
+    var url = "https://script.google.com/macros/s/AKfycbw59kt3ghlHlzCKfRHZcdHGyncjqv9Lm0o3-nCB0TXeShfUpis/exec?text=" + encodeURIComponent(val);
     fetch(url, { method: "POST" }).then(function(r) {
       alert("기록되었습니다! 페이지를 새로고침(배포)하면 목록에 나타납니다.");
       document.getElementById("rawInput").value = "";
