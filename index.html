@@ -7,29 +7,44 @@
 <style>
 body{background:#111;color:#fff;font-family:sans-serif;text-align:center;padding:20px;}
 input{width:100%;max-width:400px;padding:15px;margin-bottom:10px;border-radius:8px;border:none;font-size:16px;box-sizing:border-box;}
-button{width:100%;max-width:400px;padding:15px;background:#007bff;color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;width:100%;}
+button{width:100%;max-width:400px;padding:15px;background:#007bff;color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;}
+button:hover{background:#0056b3;}
+button:active{background:#004085;}
 .item{border-bottom:1px solid #333;padding:10px;display:flex;justify-content:space-between;max-width:400px;margin:0 auto;}
+#status{margin-top:10px;font-size:14px;color:#ffc107;}
 </style>
 </head>
 <body>
-<h2>데이터 입력 도구</h2>
-<input type="text" id="rawInput" placeholder="텍스트 붙여넣기">
-<button onclick="sendData()">시트로 보내기</button>
+<h2>📝 데이터 입력 도구</h2>
+<input type="text" id="rawInput" placeholder="텍스트 붙여넣기" autofocus>
+<button onclick="sendData()">✅ 시트로 보내기</button>
+<div id="status"></div>
 <div id="list" style="margin-top:20px;">
+<h3>📊 최근 데이터</h3>
 </div>
 <script>
 function sendData() {
   var val = document.getElementById("rawInput").value.trim();
-  if(!val) return;
-  // JSONP 방식 전송 (보안 차단 우회)
+  if(!val) {
+    document.getElementById("status").textContent = "⚠️ 텍스트를 입력하세요";
+    return;
+  }
+  document.getElementById("status").textContent = "⏳ 전송 중...";
+  // JSONP 방식 전송 (CORS 보안 차단 우회)
   var script = document.createElement("script");
   script.src = "https://script.google.com/macros/s/AKfycbw59kt3ghlHlzCKfRHZcdHGyncjqv9Lm0o3-nCB0TXeShfUpis/exec?text=" + encodeURIComponent(val) + "&callback=onSuccess";
+  script.onerror = function() { document.getElementById("status").textContent = "❌ 전송 실패"; };
   document.body.appendChild(script);
 }
 function onSuccess(res) {
-  alert("시트에 성공적으로 기록되었습니다!");
+  document.getElementById("status").textContent = "✅ 성공!";
   document.getElementById("rawInput").value = "";
+  setTimeout(function() { document.getElementById("status").textContent = ""; }, 2000);
 }
+// 엔터키로 전송
+document.getElementById("rawInput").addEventListener("keypress", function(e) {
+  if(e.key === "Enter") sendData();
+});
 </script>
 </body>
 </html>
