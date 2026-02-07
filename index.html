@@ -3,29 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Input Page</title>
+<title>Data Logger</title>
 <style>
-body{margin:0;background:#111;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px;}
-.input-area{width:100%;max-width:500px;text-align:center;}
-input{width:100%;padding:15px;font-size:16px;border-radius:8px;border:none;margin-bottom:10px;box-sizing:border-box;}
-button{width:100%;padding:15px;background:#007bff;color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;}
-.list{margin-top:30px;width:100%;max-width:500px;}
-.item{border-bottom:1px solid #333;padding:10px;display:flex;justify-content:space-between;}
+  body { margin:0; background:#111; color:#fff; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; padding:20px; }
+  .input-area { width:100%; max-width:500px; text-align:center; }
+  input { width:100%; padding:15px; font-size:16px; border-radius:8px; border:none; margin-bottom:10px; box-sizing:border-box; }
+  button { width:100%; padding:15px; background:#007bff; color:#fff; border:none; border-radius:8px; font-size:18px; cursor:pointer; }
+  .list { margin-top:30px; width:100%; max-width:500px; }
+  .item { border-bottom:1px solid #333; padding:10px; display:flex; justify-content:space-between; }
 </style>
 </head>
 <body>
-<div class="input-area"><input type="text" id="rawInput" placeholder="텍스트를 입력하세요"><button onclick="sendData()">시트에 기록하기</button></div>
-<div class="list" id="displayList">
-</div>
+  <div class="input-area">
+    <input type="text" id="rawInput" placeholder="텍스트를 붙여넣으세요">
+    <button onclick="sendData()">시트로 보내기</button>
+  </div>
+  <div class="list">
+  </div>
 <script>
-function sendData(){
-  var val = document.getElementById("rawInput").value.trim();
-  if(!val) return;
-  var url = "https://script.google.com/macros/s/AKfycbw59kt3ghlHlzCKfRHZcdHGyncjqv9Lm0o3-nCB0TXeShfUpis/exec?text=" + encodeURIComponent(val);
-  fetch(url + "&t=" + Date.now(), { method: "POST", mode: "no-cors" })
-    .then(function() { alert("기록 성공! 시트를 확인하세요."); document.getElementById("rawInput").value=""; })
-    .catch(function(e) { alert("연결 오류 발생"); });
-}
+  function sendData() {
+    var val = document.getElementById("rawInput").value.trim();
+    if(!val) return;
+    var url = "https://script.google.com/macros/s/AKfycbw59kt3ghlHlzCKfRHZcdHGyncjqv9Lm0o3-nCB0TXeShfUpis/exec?text=" + encodeURIComponent(val) + "&t=" + new Date().getTime();
+    fetch(url, { method: "POST", mode: "no-cors" }).then(function() {
+      alert("전송 시도 완료! 시트의 [시스템로그] 탭을 확인하세요.");
+      document.getElementById("rawInput").value = "";
+    }).catch(function(e) { alert("연결 오류: " + e.message); });
+  }
 </script>
 </body>
 </html>
